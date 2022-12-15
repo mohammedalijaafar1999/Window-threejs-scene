@@ -1,6 +1,13 @@
 import "./style.css";
 import * as THREE from "three";
 import soundfile from "../static/sounds/build-that-wall.mp3";
+import { Experince } from "./Scripts/core/Experince";
+
+// this is enough to run the scene
+let experince = new Experince();
+window.experince = experince;
+
+experince.init(document.getElementsByClassName("webgl")[0]);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -9,11 +16,14 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-let canvas = document.getElementsByClassName("webgl")[0];
-canvas.appendChild(renderer.domElement);
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.z = 5;
 
 // loading sounds
 let soundformat = new Audio(soundfile);
@@ -30,6 +40,12 @@ const audioLoader = new THREE.AudioLoader();
 audioLoader.load("./sounds/build-that-wall.ogg", function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
-  sound.setVolume(0.5);
+  sound.setVolume(0.1);
   // sound.play();
 });
+
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+// animate();
